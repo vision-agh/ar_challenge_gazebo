@@ -11,8 +11,8 @@
     <arg name="px4_dir" default="/root/PX4-Autopilot"/>
 
     <include file="$(arg px4_dir)/launch/mavros_posix_sitl.launch">
-        <arg name="x" value="-2"/>
-        <arg name="y" value="-2"/>
+        <arg name="x" value="$(arg uav_x0)"/>
+        <arg name="y" value="$(arg uav_y0)"/>
         <arg name="z" value="0.1"/>
         <arg name="Y" value="0"/>
         <arg name="respawn_gazebo" value="true"/>
@@ -22,4 +22,7 @@
         <arg name="verbose" value="true"/>
         <arg name="world" value="$(arg world)"/>
     </include>
+
+    <!-- Run challenge -->
+    <node name="iris_control" pkg="ar_challenge" type="iris_control" args="20.0 2.0" output="screen"/>
 </launch>

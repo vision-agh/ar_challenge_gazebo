@@ -9,6 +9,14 @@ ARG HOME=/root
 ARG CATKIN_WORKSPACE=sim_ws
 ARG USER=root
 
+# Eigen
+ENV EIGEN_VERSION=3.4.0
+
+WORKDIR /tmp/eigen
+RUN wget https://gitlab.com/libeigen/eigen/-/archive/${EIGEN_VERSION}/eigen-${EIGEN_VERSION}.tar.gz && \
+    tar -xf eigen-${EIGEN_VERSION}.tar.gz && \
+    cp -r /tmp/eigen/eigen-${EIGEN_VERSION}/ /usr/local/include/Eigen3
+
 # PX4 - NOTE: It has to be cloned, not downloaded as zip!!
 ENV PX4_PATH=$HOME/PX4-Autopilot
 

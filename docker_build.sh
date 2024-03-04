@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Building ar_challenge Docker image"
-
 build_args=""
 for (( i=1; i<=$#; i++));
 do
@@ -15,7 +13,7 @@ do
 
 done
 
-echo "Building for with additional docker arguments $build_args."
+echo "Building ar_challenge with additional docker arguments $build_args."
 
 docker build \
     $build_args \
