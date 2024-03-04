@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<sdf version="1.5">
+    <model name="lidar_laser">
+        <static>true</static>
+        <link name="laser_link">
+            <collision name="collision">
+                <geometry>
+                    <box>
+                        <size>0.05 0.02 0.02</size>
+                    </box>
+                </geometry>
+            </collision>
+            <visual name="visual">
+                <geometry>
+                    <box>
+                        <size>0.05 0.02 0.02</size>
+                    </box>
+                </geometry>
+                <material>
+                    <ambient>0.6 0.2 0.0 1.0</ambient>
+                    <diffuse>0.6 0.2 0.0 1.0</diffuse>
+                    <specular>0.6 0.2 0.0 1.0</specular>
+                    <emissive>0.0 0.0 0.0 1.0</emissive>
+                </material>
+            </visual>
+            <sensor name="lidar_laser_sensor" type="ray">
+                <pose>0 0 0 0 0 0</pose>
+                <ray>
+                    <scan display="true">
+                        <!-- <horizontal>
+                            <samples>1</samples>
+                            <resolution>1.0</resolution>
+                            <min_angle>-0.5</min_angle>
+                            <max_angle>0.5</max_angle>
+                        </horizontal> -->
+                        <vertical samples="1" resolution="1.0" min_angle="0.0" max_angle="0.0" />
+                    </scan>
+                    <range>
+                        <min>0.15</min>
+                        <max>3.0</max>
+                    </range>
+                </ray>
+                <plugin name="lidar_laser_controller" filename="libgazebo_ros_laser.so">
+                    <gaussianNoise>0.005</gaussianNoise>
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>20</updateRate>
+                    <topicName>/laser/scan</topicName>
+                    <frameName>laser_link</frameName>
+                </plugin>
+                <always_on>true</always_on>
+                <visualize>true</visualize>
+                <update_rate>2.0</update_rate>
+            </sensor>
+        </link>
+    </model>
+</sdf>
