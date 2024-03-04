@@ -17,8 +17,8 @@ int main(int argc, char** argv)
   double control_frequency_Hz = std::stod(argv[1]);
   double takeoff_altitude_m = std::stod(argv[2]);
 
-  evs::iris_proxy::IrisControl iris_control(1 / control_frequency_Hz,
-                                            takeoff_altitude_m);
+  evs::iris_control::IrisControl iris_control(1 / control_frequency_Hz,
+                                              takeoff_altitude_m);
   iris_control.ControlLoop();
 
   return 0;

@@ -2,7 +2,7 @@
 
 namespace evs
 {
-namespace iris_proxy
+namespace iris_control
 {
 IrisControl::IrisControl(double control_dt, double takeoff_altitude)
     : control_rate_(1 / control_dt),
@@ -12,7 +12,8 @@ IrisControl::IrisControl(double control_dt, double takeoff_altitude)
       // sent for at least 1 second before PX4 will arm in OFFBOARD mode, so
       // we ensure that the command stream is sent for at least 2 seconds
       initial_command_stream_length_(int(2.0 / control_dt)),
-      takeoff_altitude_(takeoff_altitude)
+      takeoff_altitude_(takeoff_altitude),
+      normal_distribution_(0.0, 0.1)
 {
   // ROS services
   arming_client_ = nh_.serviceClient<mavros_msgs::CommandBool>(kServiceArming);
@@ -20,6 +21,7 @@ IrisControl::IrisControl(double control_dt, double takeoff_altitude)
 
   // ROS publishers
   challenge_start_pub_ = nh_.advertise<std_msgs::Bool>(kTopicChallengeStart, 1);
+  iris_pose_pub_ = nh_.advertise<geometry_msgs::Pose>(kTopicIrisPose, 1);
   setpoint_local_pub_ =
       nh_.advertise<mavros_msgs::PositionTarget>(kTopicSetpointLocal, 1);
 
@@ -181,6 +183,7 @@ void IrisControl::ControlLoop()
         break;
     }
 
+    PublishIrisPose();
     ros::spinOnce();
     control_rate_.sleep();
   }
@@ -192,6 +195,19 @@ bool IrisControl::Disarm()
   msg_arm.request.value = false;
 
   return arming_client_.call(msg_arm);
+}
+
+void IrisControl::PublishIrisPose()
+{
+  geometry_msgs::Pose msg_pose;
+  msg_pose.position.x = position_.x() + normal_distribution_(random_generator_);
+  msg_pose.position.y = position_.y() + normal_distribution_(random_generator_);
+  msg_pose.position.z = position_.z() + normal_distribution_(random_generator_);
+  msg_pose.orientation.w = orientation_.w();
+  msg_pose.orientation.x = orientation_.x();
+  msg_pose.orientation.y = orientation_.y();
+  msg_pose.orientation.z = orientation_.z();
+  iris_pose_pub_.publish(msg_pose);
 }
 
 /* NOTE: The 4 upper bits of the type_mask are all unset according to the PX4
@@ -230,5 +246,5 @@ void IrisControl::StartChallenge()
   challenge_start_pub_.publish(msg_start);
 }
 
-}  // namespace iris_proxy
+}  // namespace iris_control
 }  // namespace evs

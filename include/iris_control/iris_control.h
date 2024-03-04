@@ -28,6 +28,7 @@
 #define AR_CHALLENGE_IRIS_PROXY_IRIS_CONTROL_H
 
 #include <gazebo_msgs/ModelStates.h>
+#include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/PositionTarget.h>
@@ -37,16 +38,18 @@
 #include <std_msgs/Bool.h>
 
 #include <Eigen3/Eigen/Dense>
+#include <random>
 
 namespace evs
 {
-namespace iris_proxy
+namespace iris_control
 {
 const std::string kServiceArming = "/mavros/cmd/arming";
 const std::string kServiceSetMode = "/mavros/set_mode";
 const std::string kTopicChallengeStart = "/iris_control/challenge_start";
 const std::string kTopicGazeboModelStates = "/gazebo/model_states";
 const std::string kTopicIrisCmdVel = "/iris_control/cmd_vel";
+const std::string kTopicIrisPose = "/iris_control/pose";
 const std::string kTopicMavrosState = "/mavros/state";
 const std::string kTopicSetpointLocal = "/mavros/setpoint_raw/local";
 
@@ -131,6 +134,11 @@ class IrisControl
   bool Disarm();
 
   /**
+   * @brief Publish the noised pose of the drone.
+   */
+  void PublishIrisPose();
+
+  /**
    * @brief Set velocity of the drone.
    *
    * Velocity is set in the body frame of the drone (NED coordinate
@@ -161,6 +169,7 @@ class IrisControl
   ros::ServiceClient set_mode_client_;
 
   ros::Publisher challenge_start_pub_;
+  ros::Publisher iris_pose_pub_;
   ros::Publisher setpoint_local_pub_;
 
   ros::Subscriber gazebo_model_states_sub_;
@@ -180,8 +189,10 @@ class IrisControl
 
   Eigen::Vector3d position_;
   Eigen::Quaterniond orientation_;
+  std::default_random_engine random_generator_;
+  std::normal_distribution<double> normal_distribution_;
 };
-}  // namespace iris_proxy
+}  // namespace iris_control
 }  // namespace evs
 
 #endif  // AR_CHALLENGE_IRIS_PROXY_IRIS_CONTROL_H
