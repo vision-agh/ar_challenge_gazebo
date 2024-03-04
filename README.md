@@ -60,9 +60,48 @@ Next you need to update some paths with [environment_vars.sh] script:
 . ~/sim_ws/src/ar_challenge/environment_vars.sh
 ```
 
-**NOTE:** Remember about dot before path.
+**NOTE:** Remember about dot before the path.
 
 ## Challenge overview
+
+Challenge can be started with the prepared [challenge.launch](./launch/challenge.launch):
+
+```
+roslaunch ar_challenge challenge.launch
+```
+
+This script launches the Gazebo simulator, spawns Iris UAV model and runs the control node (`iris_node`).
+You can communicate with control node via two topics:
+
+- `/iris_control/pose` ([std_msgs/Bool](http://docs.ros.org/en/melodic/api/std_msgs/html/msg/Bool.html)) - node publishes current pose (position + orientation),
+- `/iris_control/cmd_vel` ([geometry_msgs/Twist](http://docs.ros.org/en/noetic/api/geometry_msgs/html/msg/Twist.html)) - node subscribes to get the velocity control signal
+
+Beside that, Iris UAV model provides video stream from camera and altitude from LiDAR sensor:
+
+- `/iris/usb_cam/camera_info` ([sensor_msgs/CameraInfo](http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/CameraInfo.html)) - camera parametres,
+- `/iris/usb_cam/image_raw` ([sensor_msgs/Image](http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/Image.html)) - RGB image,
+- `/laser/scan` ([sensor_msgs/LaserScan](http://docs.ros.org/en/noetic/api/sensor_msgs/html/msg/LaserScan.html)) - LiDAR measurement.
+
+### Goal formulation
+
+The main goal is to detect ArUco tag on the camera image and control the UAV to hover directly over the center of the tag.
+
+### Initial conditions
+
+Both UAV and landing pad are launched in predefined positions.
+After that, the control node performs takeoff to predefined altitude and listens to messages coming in `/iris_control/cmd_vel` topic.
+
+**NOTE 1:** Initial positions of UAV and landing pad as well as the takeoff altitude may vary during evaluation.
+You can only assume that after the takeoff, landing pad will be inside the field of view of camera (will be visible in the image).
+
+**NOTE 2:** The control node runs at 20 Hz.
+Therefore your algorithm should also publish new velocity command on `/iris_control/cmd_vel` with the same frequency.
+
+### Evaluation
+
+Evaluation will consist of N runs with random initial conditions.
+To achieve aforementioned goal, UAV has to hoover above the center of the ArUco tag.
+This means that horizontal distance between UAV and ArUco tag should be less than 15 cm for at least 30 seconds.
 
 ## ROS basics
 
