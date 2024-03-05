@@ -103,6 +103,10 @@ Evaluation will consist of N runs with random initial conditions.
 To achieve aforementioned goal, UAV has to hoover above the center of the ArUco tag.
 This means that horizontal distance between UAV and ArUco tag should be less than 15 cm for at least 30 seconds.
 
-## ROS basics
-
 ## Useful links and tips
+- [GitHub documentation](https://docs.github.com/en)
+- [Gazebo simulator](https://gazebosim.org/docs)
+- [PX4 Autopilot](https://px4.io/)
+- [Docker containers](https://docs.docker.com/)
+- [ROS documentation](http://wiki.ros.org/)
+- [ROS tutorials](http://wiki.ros.org/ROS/Tutorials)
